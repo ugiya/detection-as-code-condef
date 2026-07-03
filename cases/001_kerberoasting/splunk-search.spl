@@ -1,0 +1,30 @@
+``` Kerberoasting detection — T1558.003 ```
+``` DRAFT: field names are the Splunk_TA_windows extractions for Event ID 4769. ```
+``` Verify every field against your own 4769 telemetry before trusting this (see detection-card.md, failure mode 3). ```
+
+index=* sourcetype="WinEventLog:Security" EventCode=4769
+
+``` 0x17 = RC4-HMAC, the weak cipher Kerberoasting requests to enable fast offline cracking ```
+Ticket_Encryption_Type="0x17"
+
+``` 0x40810000 / 0x40800000 are the common Rubeus / GetUserSPNs ticket-option masks ```
+Ticket_Options IN ("0x40810000","0x40800000")
+
+``` Exclude the krbtgt SPN and machine accounts (trailing $) — normal Kerberos noise ```
+Service_Name!="krbtgt" Service_Name!="*$"
+Account_Name!="*$"
+
+| eval src_ip=replace(Client_Address,"^::ffff:","")
+| stats count
+        min(_time) as first_seen
+        max(_time) as last_seen
+        dc(Service_Name) as distinct_spns
+        values(Service_Name) as targeted_spns
+        by Account_Name, src_ip
+
+``` One account pulling RC4 tickets for many distinct SPNs in a short window is the signal. ```
+``` Threshold is a starting point — re-baseline against this lab's quiet window (see report.md §4). ```
+| where distinct_spns >= 3
+
+| convert ctime(first_seen) ctime(last_seen)
+| sort - distinct_spns

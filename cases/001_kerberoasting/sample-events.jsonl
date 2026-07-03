@@ -1,0 +1,1 @@
+{"_placeholder": "After detonation, paste 2-4 representative REDACTED Event ID 4769 records here (one JSON object per line). Include a few true positives (RC4 0x17 roast requests) and a couple of benign lookalikes the query must NOT match. Redact real hostnames/users/IPs but keep the field shapes intact - these become the regression fixtures for splunk-search.spl."}
