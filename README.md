@@ -25,7 +25,7 @@ The LLM drafts and explains; the telemetry decides. No detection is committed as
 
 | # | Technique | MITRE | Status |
 |---|-----------|-------|--------|
-| [001](cases/001_kerberoasting/) | Kerberoasting | [T1558.003](https://attack.mitre.org/techniques/T1558/003/) | 🚧 drafted — pending range verification |
+| [001](cases/001_kerberoasting/) | Kerberoasting | [T1558.003](https://attack.mitre.org/techniques/T1558/003/) | ✅ verified — 1 true positive, 0 false positives / 30d |
 
 ## Lab
 
